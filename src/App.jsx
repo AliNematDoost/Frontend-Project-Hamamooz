@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import ClustersPage from "./pages/ClustersPage";
 import NamespacesPage from "./pages/NamespacesPage";
 import AppsPage from "./pages/AppsPage";
+import AppDetailPage from "./pages/AppDetailPage";
 
 export default function App() {
   return (
@@ -18,6 +19,10 @@ export default function App() {
         element={<AppsPage />}
       />
 
+      <Route
+        path="/clusters/:clusterId/namespaces/:namespaceId/apps/:appId"
+        element={<AppDetailPage />}
+      />
     </Routes>
   );
 }

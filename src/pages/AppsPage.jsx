@@ -4,7 +4,6 @@ import { Button, Empty, Typography } from "antd";
 
 import { useNavigate, useParams } from "react-router-dom";
 
-import NamespaceList from "../components/NamespaceList";
 import AppList from "../components/AppList";
 
 import { mockClusters, mockNamespaces, mockApps } from "../mock/data";
