@@ -12,58 +12,71 @@ export default function AppCard({ app, onClick }) {
   const readyPods = app.pods.filter((pod) => pod.ready).length;
 
   return (
-    <Card
-      hoverable
-      onClick={onClick}
-      style={{
-        borderRadius: 12,
-        height: "100%",
-      }}
-    >
+    <Card className="resource-card" hoverable onClick={onClick}>
       <Card.Meta
         avatar={
-          <CodeOutlined
-            style={{
-              fontSize: 28,
-              color: "#1677ff",
-            }}
-          />
+          <div className="resource-card-icon">
+            <CodeOutlined />
+          </div>
         }
         title={app.name}
         description={
-          <Space
-            direction="vertical"
-            size={8}
-            style={{
-              width: "100%",
-              marginTop: 8,
-            }}
-          >
-            <Text type="secondary" ellipsis>
+          <>
+            <Text className="resource-address" ellipsis>
               {app.image}
             </Text>
 
-            <Space wrap>
+            <div className="resource-meta">
               <Tag
                 color={app.ready ? "green" : "orange"}
                 icon={
                   app.ready ? <CheckCircleOutlined /> : <CloseCircleOutlined />
                 }
+                className="resource-status"
               >
                 {app.ready ? "Running" : "Not Ready"}
               </Tag>
 
-              <Tag>Replicas: {app.replicas}</Tag>
-
-              <Tag>
-                Pods: {readyPods}/{app.pods.length}
+              <Tag className="resource-status">
+                {app.replicas} {app.replicas === 1 ? "Replica" : "Replicas"}
               </Tag>
-            </Space>
 
-            <Text>CPU: {app.cpu}</Text>
+              <Tag className="resource-status">
+                Pods {readyPods}/{app.pods.length}
+              </Tag>
+            </div>
 
-            <Text>Memory: {app.memory}</Text>
-          </Space>
+            <div className="resource-actions">
+              <Space size={14}>
+                <Text
+                  type="secondary"
+                  style={{
+                    fontSize: 12,
+                  }}
+                >
+                  CPU: {app.cpu}
+                </Text>
+
+                <Text
+                  type="secondary"
+                  style={{
+                    fontSize: 12,
+                  }}
+                >
+                  Memory: {app.memory}
+                </Text>
+              </Space>
+
+              <Text
+                type="secondary"
+                style={{
+                  fontSize: 12,
+                }}
+              >
+                View details →
+              </Text>
+            </div>
+          </>
         }
       />
     </Card>

@@ -4,7 +4,9 @@ import { BrowserRouter } from "react-router-dom";
 import { ConfigProvider } from "antd";
 
 import App from "./App";
+
 import "./index.css";
+import "./App.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -13,7 +15,18 @@ createRoot(document.getElementById("root")).render(
         theme={{
           token: {
             colorPrimary: "#1677ff",
-            borderRadius: 8,
+            borderRadius: 9,
+            colorText: "#172033",
+            colorTextSecondary: "#728096",
+            colorBgLayout: "#f4f7fb",
+          },
+          components: {
+            Button: {
+              controlHeight: 40,
+            },
+            Card: {
+              borderRadiusLG: 16,
+            },
           },
         }}
       >

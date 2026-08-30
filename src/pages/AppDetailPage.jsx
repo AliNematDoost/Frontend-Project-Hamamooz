@@ -52,16 +52,18 @@ export default function AppDetailPage() {
 
   if (!cluster || !namespace || !app) {
     return (
-      <Empty description="App not found">
-        <Button
-          type="primary"
-          onClick={() =>
-            navigate(`/clusters/${clusterId}/namespaces/${namespaceId}`)
-          }
-        >
-          Back to Apps
-        </Button>
-      </Empty>
+      <main className="app-page">
+        <Empty className="empty-state" description="App not found">
+          <Button
+            type="primary"
+            onClick={() =>
+              navigate(`/clusters/${clusterId}/namespaces/${namespaceId}`)
+            }
+          >
+            Back to Apps
+          </Button>
+        </Empty>
+      </main>
     );
   }
 
@@ -111,120 +113,95 @@ export default function AppDetailPage() {
   };
 
   return (
-    <main>
+    <main className="app-page">
       <Button
         type="text"
+        className="back-button"
         icon={<ArrowLeftOutlined />}
         onClick={() =>
           navigate(`/clusters/${clusterId}/namespaces/${namespaceId}`)
         }
-        style={{
-          paddingLeft: 0,
-          marginBottom: 12,
-        }}
       >
         Back to Apps
       </Button>
 
-      <Space
-        direction="vertical"
-        size={16}
-        style={{
-          width: "100%",
-        }}
-      >
-        <Space
-          style={{
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-          align="start"
-        >
-          <div>
-            <Title
-              level={2}
-              style={{
-                marginBottom: 4,
-              }}
-            >
-              {app.name}
-            </Title>
+      <header className="page-header">
+        <div className="page-header-content">
+          <p className="page-eyebrow">Application</p>
 
-            <Paragraph type="secondary">
-              {cluster.name} / {namespace.name}
-            </Paragraph>
-          </div>
+          <Title className="page-title">{app.name}</Title>
 
-          <Space>
-            {!editing && (
-              <Button icon={<EditOutlined />} onClick={() => setEditing(true)}>
-                Edit
-              </Button>
-            )}
+          <Paragraph className="page-description">
+            {cluster.name} / {namespace.name}
+          </Paragraph>
+        </div>
 
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => setDeleteModalOpen(true)}
-            >
-              Delete
+        <div className="page-actions">
+          {!editing && (
+            <Button icon={<EditOutlined />} onClick={() => setEditing(true)}>
+              Edit
             </Button>
-          </Space>
-        </Space>
+          )}
 
-        {editing ? (
-          <Card title="Edit App">
-            <AppEditForm
-              app={app}
-              loading={saving}
-              onSave={handleSave}
-              onCancel={() => setEditing(false)}
-            />
-          </Card>
-        ) : (
-          <Card>
-            <Descriptions
-              title="App Details"
-              bordered
-              column={{
-                xs: 1,
-                sm: 2,
-              }}
-            >
-              <Descriptions.Item label="Name">{app.name}</Descriptions.Item>
+          <Button
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => setDeleteModalOpen(true)}
+          >
+            Delete
+          </Button>
+        </div>
+      </header>
 
-              <Descriptions.Item label="Status">
-                <Tag
-                  color={app.ready ? "green" : "orange"}
-                  icon={
-                    app.ready ? (
-                      <CheckCircleOutlined />
-                    ) : (
-                      <CloseCircleOutlined />
-                    )
-                  }
-                >
-                  {app.ready ? "Running" : "Not Ready"}
-                </Tag>
-              </Descriptions.Item>
+      {editing ? (
+        <Card className="edit-card" title="Edit Application">
+          <AppEditForm
+            app={app}
+            loading={saving}
+            onSave={handleSave}
+            onCancel={() => setEditing(false)}
+          />
+        </Card>
+      ) : (
+        <Card className="detail-card">
+          <Descriptions
+            title="Application Details"
+            bordered
+            column={{
+              xs: 1,
+              sm: 2,
+            }}
+          >
+            <Descriptions.Item label="Name">{app.name}</Descriptions.Item>
 
-              <Descriptions.Item label="Image">{app.image}</Descriptions.Item>
+            <Descriptions.Item label="Status">
+              <Tag
+                color={app.ready ? "green" : "orange"}
+                icon={
+                  app.ready ? <CheckCircleOutlined /> : <CloseCircleOutlined />
+                }
+                className="resource-status"
+              >
+                {app.ready ? "Running" : "Not Ready"}
+              </Tag>
+            </Descriptions.Item>
 
-              <Descriptions.Item label="Replicas">
-                {app.replicas}
-              </Descriptions.Item>
+            <Descriptions.Item label="Image">{app.image}</Descriptions.Item>
 
-              <Descriptions.Item label="Ready Pods">
-                {readyPods}/{app.pods.length}
-              </Descriptions.Item>
+            <Descriptions.Item label="Replicas">
+              {app.replicas}
+            </Descriptions.Item>
 
-              <Descriptions.Item label="CPU">{app.cpu}</Descriptions.Item>
+            <Descriptions.Item label="Ready Pods">
+              {readyPods}/{app.pods.length}
+            </Descriptions.Item>
 
-              <Descriptions.Item label="Memory">{app.memory}</Descriptions.Item>
-            </Descriptions>
-          </Card>
-        )}
-      </Space>
+            <Descriptions.Item label="CPU">{app.cpu}</Descriptions.Item>
+
+            <Descriptions.Item label="Memory">{app.memory}</Descriptions.Item>
+          </Descriptions>
+        </Card>
+      )}
 
       <ConfirmDeleteModal
         open={deleteModalOpen}

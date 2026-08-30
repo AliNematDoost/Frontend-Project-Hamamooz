@@ -1,3 +1,5 @@
+import { ClusterOutlined } from "@ant-design/icons";
+
 import { Typography } from "antd";
 
 import ClusterList from "../components/ClusterList";
@@ -7,14 +9,32 @@ const { Title, Paragraph } = Typography;
 
 export default function ClustersPage() {
   return (
-    <main>
-      <Title level={2}>Clusters</Title>
+    <main className="app-page">
+      <header className="page-header">
+        <div className="page-header-content">
+          <p className="page-eyebrow">Kubernetes</p>
 
-      <Paragraph type="secondary">
-        Select a cluster to manage its namespaces and apps.
-      </Paragraph>
+          <Title className="page-title">Clusters</Title>
 
-      <ClusterList clusters={mockClusters} />
+          <Paragraph className="page-description">
+            Manage your Kubernetes clusters and explore their namespaces and
+            applications.
+          </Paragraph>
+        </div>
+
+        <div className="page-actions">
+          <ClusterOutlined
+            style={{
+              color: "#1677ff",
+              fontSize: 28,
+            }}
+          />
+        </div>
+      </header>
+
+      <section className="resource-grid">
+        <ClusterList clusters={mockClusters} />
+      </section>
     </main>
   );
 }

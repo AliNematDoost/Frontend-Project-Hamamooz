@@ -19,48 +19,46 @@ export default function NamespaceCard({ namespace, clusterId, onDelete }) {
   };
 
   return (
-    <Card
-      hoverable
-      onClick={handleClick}
-      style={{
-        borderRadius: 12,
-        height: "100%",
-      }}
-    >
+    <Card className="resource-card" hoverable onClick={handleClick}>
       <Card.Meta
         avatar={
-          <ApartmentOutlined
-            style={{
-              fontSize: 28,
-              color: "#1677ff",
-            }}
-          />
+          <div className="resource-card-icon">
+            <ApartmentOutlined />
+          </div>
         }
         title={namespace.name}
         description={
-          <Space
-            direction="vertical"
-            size={8}
-            style={{
-              width: "100%",
-              marginTop: 8,
-            }}
-          >
-            <Space>
-              <Tag color="green">Active</Tag>
+          <>
+            <div className="resource-meta">
+              <Tag color="green" className="resource-status">
+                Active
+              </Tag>
 
-              <Text type="secondary">ID: {namespace.id}</Text>
-            </Space>
+              <Text className="resource-id">Namespace ID: {namespace.id}</Text>
+            </div>
 
-            <Button
-              danger
-              size="small"
-              icon={<DeleteOutlined />}
-              onClick={handleDeleteClick}
-            >
-              Delete
-            </Button>
-          </Space>
+            <div className="resource-actions">
+              <Text
+                type="secondary"
+                style={{
+                  fontSize: 12,
+                }}
+              >
+                View Apps
+              </Text>
+
+              <Button
+                type="text"
+                danger
+                size="small"
+                className="delete-button"
+                icon={<DeleteOutlined />}
+                onClick={handleDeleteClick}
+              >
+                Delete
+              </Button>
+            </div>
+          </>
         }
       />
     </Card>

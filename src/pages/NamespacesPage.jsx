@@ -25,11 +25,13 @@ export default function NamespacesPage() {
 
   if (!cluster) {
     return (
-      <Empty description="Cluster not found">
-        <Button type="primary" onClick={() => navigate("/clusters")}>
-          Back to Clusters
-        </Button>
-      </Empty>
+      <main className="app-page">
+        <Empty className="empty-state" description="Cluster not found">
+          <Button type="primary" onClick={() => navigate("/clusters")}>
+            Back to Clusters
+          </Button>
+        </Empty>
+      </main>
     );
   }
 
@@ -79,54 +81,49 @@ export default function NamespacesPage() {
   };
 
   return (
-    <main>
+    <main className="app-page">
       <Button
         type="text"
+        className="back-button"
         icon={<ArrowLeftOutlined />}
         onClick={() => navigate("/clusters")}
-        style={{
-          paddingLeft: 0,
-          marginBottom: 12,
-        }}
       >
         Back to Clusters
       </Button>
 
-      <Space
-        style={{
-          width: "100%",
-          justifyContent: "space-between",
-          marginBottom: 16,
-        }}
-        align="start"
-      >
-        <div>
-          <Title
-            level={2}
-            style={{
-              marginBottom: 4,
-            }}
-          >
-            {cluster.name}
-          </Title>
+      <header className="page-header">
+        <div className="page-header-content">
+          <p className="page-eyebrow">Cluster</p>
 
-          <Paragraph type="secondary">
-            Select a namespace to manage its apps.
+          <Title className="page-title">{cluster.name}</Title>
+
+          <Paragraph className="page-description">
+            Explore and manage the namespaces running inside this cluster.
           </Paragraph>
         </div>
 
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => setCreateModalOpen(true)}
-        >
-          Create Namespace
-        </Button>
-      </Space>
+        <div className="page-actions">
+          <Button
+            type="primary"
+            className="primary-action"
+            icon={<PlusOutlined />}
+            onClick={() => setCreateModalOpen(true)}
+          >
+            Create Namespace
+          </Button>
+        </div>
+      </header>
 
       {namespaces.length === 0 ? (
-        <Empty description={"No namespaces found in this cluster"}>
-          <Button type="primary" onClick={() => setCreateModalOpen(true)}>
+        <Empty
+          className="empty-state"
+          description={"No namespaces found in this cluster"}
+        >
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setCreateModalOpen(true)}
+          >
             Create Namespace
           </Button>
         </Empty>
