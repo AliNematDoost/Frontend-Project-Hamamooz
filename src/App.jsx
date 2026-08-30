@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import ClustersPage from "./pages/ClustersPage";
 import NamespacesPage from "./pages/NamespacesPage";
+import AppsPage from "./pages/AppsPage";
 
 export default function App() {
   return (
@@ -12,7 +13,11 @@ export default function App() {
 
       <Route path="/clusters/:clusterId" element={<NamespacesPage />} />
 
-      <Route path="*" element={<Navigate to="/clusters" replace />} />
+      <Route
+        path="/clusters/:clusterId/namespaces/:namespaceId"
+        element={<AppsPage />}
+      />
+
     </Routes>
   );
 }
