@@ -1,14 +1,14 @@
-import { ApartmentOutlined, CloudServerOutlined } from "@ant-design/icons";
+import { ApartmentOutlined } from "@ant-design/icons";
 import { Card, Tag, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 
 const { Text } = Typography;
 
-export default function ClusterCard({ cluster }) {
+export default function NamespaceCard({ namespace, clusterId }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/clusters/${cluster.id}`);
+    navigate(`/clusters/${clusterId}/namespaces/${namespace.id}`);
   };
 
   return (
@@ -22,25 +22,30 @@ export default function ClusterCard({ cluster }) {
     >
       <Card.Meta
         avatar={
-          <CloudServerOutlined
+          <ApartmentOutlined
             style={{
               fontSize: 28,
               color: "#1677ff",
             }}
           />
         }
-        title={cluster.name}
+        title={namespace.name}
         description={
           <div
             style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
               marginTop: 8,
             }}
           >
-            <Text type="secondary" ellipsis>
-              {cluster.address}
+            <Tag color="green">Active</Tag>
+
+            <Text
+              type="secondary"
+              style={{
+                display: "block",
+                marginTop: 8,
+              }}
+            >
+              Namespace ID: {namespace.id}
             </Text>
           </div>
         }
