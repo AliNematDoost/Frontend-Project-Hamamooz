@@ -3,14 +3,14 @@ import { Modal } from "antd";
 export default function ConfirmDeleteModal({
   open,
   loading,
-  appName,
+  itemName,
   onConfirm,
   onCancel,
 }) {
   return (
     <Modal
       open={open}
-      title="Delete App"
+      title="Confirm Delete"
       okText="Delete"
       okButtonProps={{
         danger: true,
@@ -20,7 +20,7 @@ export default function ConfirmDeleteModal({
       onCancel={onCancel}
     >
       <p>
-        Are you sure you want to delete <strong>{appName}</strong>?
+        Are you sure you want to delete <strong>{itemName}</strong>?
       </p>
 
       <p>This action cannot be undone.</p>

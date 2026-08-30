@@ -72,7 +72,9 @@ export default function AppDetailPage() {
 
     try {
       app.replicas = values.replicas;
+
       app.cpu = `${values.cpu}m`;
+
       app.memory = values.memory;
 
       message.success("App updated successfully");
@@ -227,7 +229,7 @@ export default function AppDetailPage() {
       <ConfirmDeleteModal
         open={deleteModalOpen}
         loading={deleting}
-        appName={app.name}
+        itemName={app.name}
         onConfirm={handleDelete}
         onCancel={() => setDeleteModalOpen(false)}
       />

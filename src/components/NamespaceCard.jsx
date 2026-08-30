@@ -1,14 +1,21 @@
-import { ApartmentOutlined } from "@ant-design/icons";
-import { Card, Tag, Typography } from "antd";
+import { ApartmentOutlined, DeleteOutlined } from "@ant-design/icons";
+
+import { Button, Card, Space, Tag, Typography } from "antd";
+
 import { useNavigate } from "react-router-dom";
 
 const { Text } = Typography;
 
-export default function NamespaceCard({ namespace, clusterId }) {
+export default function NamespaceCard({ namespace, clusterId, onDelete }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
     navigate(`/clusters/${clusterId}/namespaces/${namespace.id}`);
+  };
+
+  const handleDeleteClick = (event) => {
+    event.stopPropagation();
+    onDelete(namespace);
   };
 
   return (
@@ -31,23 +38,29 @@ export default function NamespaceCard({ namespace, clusterId }) {
         }
         title={namespace.name}
         description={
-          <div
+          <Space
+            direction="vertical"
+            size={8}
             style={{
+              width: "100%",
               marginTop: 8,
             }}
           >
-            <Tag color="green">Active</Tag>
+            <Space>
+              <Tag color="green">Active</Tag>
 
-            <Text
-              type="secondary"
-              style={{
-                display: "block",
-                marginTop: 8,
-              }}
+              <Text type="secondary">ID: {namespace.id}</Text>
+            </Space>
+
+            <Button
+              danger
+              size="small"
+              icon={<DeleteOutlined />}
+              onClick={handleDeleteClick}
             >
-              Namespace ID: {namespace.id}
-            </Text>
-          </div>
+              Delete
+            </Button>
+          </Space>
         }
       />
     </Card>

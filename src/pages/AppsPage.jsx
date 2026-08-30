@@ -1,11 +1,7 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
-
 import { Button, Empty, Typography } from "antd";
-
 import { useNavigate, useParams } from "react-router-dom";
-
 import AppList from "../components/AppList";
-
 import { mockClusters, mockNamespaces, mockApps } from "../mock/data";
 
 const { Title, Paragraph } = Typography;

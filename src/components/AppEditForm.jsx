@@ -33,7 +33,12 @@ export default function AppEditForm({ app, loading, onSave, onCancel }) {
           },
         ]}
       >
-        <InputNumber style={{ width: "100%" }} min={1} />
+        <InputNumber
+          style={{
+            width: "100%",
+          }}
+          min={1}
+        />
       </Form.Item>
 
       <Form.Item
