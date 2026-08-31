@@ -6,6 +6,8 @@ import {
   CloseCircleOutlined,
   DeleteOutlined,
   EditOutlined,
+  CloudUploadOutlined,
+  ScheduleOutlined,
 } from "@ant-design/icons";
 
 import {
@@ -17,14 +19,17 @@ import {
   Tag,
   Typography,
   message,
+  Tabs,
 } from "antd";
 
 import { useNavigate, useParams } from "react-router-dom";
-
 import AppEditForm from "../components/AppEditForm";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
-
-import { mockClusters, mockNamespaces, mockApps } from "../mock/data";
+import { mockClusters, mockNamespaces, mockApps, mockBackups, mockSchedules } from "../mock/data";
+import BackupFormModal from "../components/BackupFormModal";
+import ScheduleBackupFormModal from "../components/ScheduleBackupFormModal";
+import BackupHistoryList from "../components/BackupHistoryList";
+import ScheduledBackupList from "../components/ScheduledBackupList";
 
 const { Title, Paragraph } = Typography;
 
@@ -37,6 +42,15 @@ export default function AppDetailPage() {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  
+  const [backups, setBackups] = useState(mockBackups[appId] ?? []);
+  const [backupModalOpen, setBackupModalOpen] = useState(false);
+  const [backupSubmitting, setBackupSubmitting] = useState(false);
+
+  const [schedules, setSchedules] = useState(mockSchedules[appId] ?? []);
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [scheduleSubmitting, setScheduleSubmitting] = useState(false);
+  const [deactivatingId, setDeactivatingId] = useState(null);
 
   const cluster = mockClusters.find(
     (item) => String(item.id) === String(clusterId),
@@ -112,6 +126,75 @@ export default function AppDetailPage() {
     }
   };
 
+  const handleRunBackup = async (values) => {
+    setBackupSubmitting(true);
+
+    try {
+      const newBackup = {
+        backup_id: `bkp_${Date.now()}`,
+        status: "pending",
+        pod_name: "",
+        output_path: "",
+        error: "",
+        is_scheduled: false,
+      };
+
+      setBackups((current) => [newBackup, ...current]);
+
+      message.success("Backup started");
+
+      setBackupModalOpen(false);
+    } catch {
+      message.error("Failed to start backup");
+    } finally {
+      setBackupSubmitting(false);
+    }
+  };
+
+  const handleCreateSchedule = async (values) => {
+    setScheduleSubmitting(true);
+
+    try {
+      const newSchedule = {
+        schedule_backup_id: `sch_${Date.now()}`,
+        schedule: values.schedule,
+        source_path: values.sourcePath,
+        created_at: new Date().toISOString(),
+        active: true,
+      };
+
+      setSchedules((current) => [newSchedule, ...current]);
+
+      message.success("Backup schedule created");
+
+      setScheduleModalOpen(false);
+    } catch {
+      message.error("Failed to create backup schedule");
+    } finally {
+      setScheduleSubmitting(false);
+    }
+  };
+
+  const handleDeactivateSchedule = async (scheduleId) => {
+    setDeactivatingId(scheduleId);
+
+    try {
+      setSchedules((current) =>
+        current.map((item) =>
+          item.schedule_backup_id === scheduleId
+            ? { ...item, active: false }
+            : item,
+        ),
+      );
+
+      message.success("Schedule deactivated");
+    } catch {
+      message.error("Failed to deactivate schedule");
+    } finally {
+      setDeactivatingId(null);
+    }
+  };
+
   return (
     <main className="app-page">
       <Button
@@ -137,20 +220,24 @@ export default function AppDetailPage() {
         </div>
 
         <div className="page-actions">
+          <Button icon={<CloudUploadOutlined />} onClick={() => setBackupModalOpen(true)}>
+            Backup Now
+          </Button>
+          <Button icon={<ScheduleOutlined />} onClick={() => setScheduleModalOpen(true)}>
+            Schedule Backup
+          </Button>
+
           {!editing && (
             <Button icon={<EditOutlined />} onClick={() => setEditing(true)}>
               Edit
             </Button>
           )}
 
-          <Button
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => setDeleteModalOpen(true)}
-          >
+          <Button danger icon={<DeleteOutlined />} onClick={() => setDeleteModalOpen(true)}>
             Delete
           </Button>
         </div>
+        
       </header>
 
       {editing ? (
@@ -203,12 +290,55 @@ export default function AppDetailPage() {
         </Card>
       )}
 
+      <Card className="backup-card">
+        <div className="backup-card-header">
+          <Title level={5} className="backup-card-title">Backups</Title>
+        </div>
+
+        <Tabs
+          defaultActiveKey="history"
+          items={[
+            {
+              key: "history",
+              label: "History",
+              children: <BackupHistoryList backups={backups} loading={false} />,
+            },
+            {
+              key: "scheduled",
+              label: "Scheduled",
+              children: (
+                <ScheduledBackupList
+                  schedules={schedules}
+                  loading={false}
+                  deactivatingId={deactivatingId}
+                  onDeactivate={handleDeactivateSchedule}
+                />
+              ),
+            },
+          ]}
+        />
+      </Card>
+
       <ConfirmDeleteModal
         open={deleteModalOpen}
         loading={deleting}
         itemName={app.name}
         onConfirm={handleDelete}
         onCancel={() => setDeleteModalOpen(false)}
+      />
+
+      <BackupFormModal
+        open={backupModalOpen}
+        loading={backupSubmitting}
+        onCreate={handleRunBackup}
+        onCancel={() => setBackupModalOpen(false)}
+      />
+
+      <ScheduleBackupFormModal
+        open={scheduleModalOpen}
+        loading={scheduleSubmitting}
+        onCreate={handleCreateSchedule}
+        onCancel={() => setScheduleModalOpen(false)}
       />
     </main>
   );

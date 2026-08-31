@@ -98,3 +98,38 @@ export const mockApps = {
 
     21: [],
 }
+
+export const mockBackups = {
+  101: [
+    {
+      backup_id: "bkp_1",
+      status: "completed",
+      pod_name: "billing-api-abc12",
+      output_path: "/backups/billing-api/2026-08-20.tar.gz",
+      error: "",
+      is_scheduled: false,
+    },
+    {
+      backup_id: "bkp_2",
+      status: "failed",
+      pod_name: "billing-api-abc13",
+      output_path: "",
+      error: "no space left on device",
+      is_scheduled: true,
+    },
+  ],
+  102: [],
+}
+
+export const mockSchedules = {
+  101: [
+    {
+      schedule_backup_id: "sch_1",
+      schedule: "0 2 * * *",
+      source_path: "/var/lib/mysql",
+      created_at: "2026-08-01T02:00:00Z",
+      active: true,
+    },
+  ],
+  102: [],
+}
