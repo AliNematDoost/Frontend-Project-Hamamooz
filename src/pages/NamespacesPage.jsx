@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Empty, Space, Typography, message } from "antd";
+import { Alert, Button, Empty, Skeleton, Typography, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import NamespaceList from "../components/NamespaceList";
 import NamespaceFormModal from "../components/NamespaceFormModal";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
-import { mockClusters, mockNamespaces } from "../mock/data";
+import { listClusters } from "../api/clusters";
+import {
+  createNamespace,
+  deleteNamespace,
+  listNamespaces,
+} from "../api/namespaces";
 
 const { Title, Paragraph } = Typography;
 
@@ -13,15 +18,86 @@ export default function NamespacesPage() {
   const { clusterId } = useParams();
   const navigate = useNavigate();
 
-  const cluster = mockClusters.find(
-    (item) => String(item.id) === String(clusterId),
-  );
+  const [cluster, setCluster] = useState(null);
+  const [namespaces, setNamespaces] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [namespaces, setNamespaces] = useState(mockNamespaces[clusterId] ?? []);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [namespaceToDelete, setNamespaceToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const [clustersData, namespacesData] = await Promise.all([
+        listClusters(),
+        listNamespaces(clusterId),
+      ]);
+
+      setCluster(
+        clustersData.find((item) => String(item.id) === String(clusterId)) ??
+          null,
+      );
+      setNamespaces(namespacesData);
+    } catch {
+      setError("Failed to load namespaces");
+      message.error("Failed to load namespaces");
+    } finally {
+      setLoading(false);
+    }
+  }, [clusterId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleCreate = async (values) => {
+    setCreating(true);
+
+    try {
+      await createNamespace({ clusterId, name: values.name });
+      message.success("Namespace created successfully");
+      setCreateModalOpen(false);
+      fetchData();
+    } catch (err) {
+      message.error(err?.response?.data?.error ?? "Failed to create namespace");
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!namespaceToDelete) return;
+    setDeleting(true);
+
+    try {
+      await deleteNamespace(namespaceToDelete.id);
+      message.success("Namespace deleted successfully");
+      setNamespaceToDelete(null);
+      fetchData();
+    } catch (err) {
+      message.error(err?.response?.data?.error ?? "Failed to delete namespace");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  if (loading)
+    return (
+      <main className="app-page">
+        <Skeleton active paragraph={{ rows: 4 }} />
+      </main>
+    );
+  if (error)
+    return (
+      <main className="app-page">
+        <Alert type="error" showIcon message={error} />
+      </main>
+    );
 
   if (!cluster) {
     return (
@@ -34,51 +110,6 @@ export default function NamespacesPage() {
       </main>
     );
   }
-
-  const handleCreate = async (values) => {
-    setCreating(true);
-
-    try {
-      const newNamespace = {
-        id: Date.now(),
-        name: values.name,
-        cluster: cluster.id,
-        created_at: new Date().toISOString(),
-      };
-
-      setNamespaces((current) => [...current, newNamespace]);
-
-      message.success("Namespace created successfully");
-
-      setCreateModalOpen(false);
-    } catch {
-      message.error("Failed to create namespace");
-    } finally {
-      setCreating(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!namespaceToDelete) {
-      return;
-    }
-
-    setDeleting(true);
-
-    try {
-      setNamespaces((current) =>
-        current.filter((namespace) => namespace.id !== namespaceToDelete.id),
-      );
-
-      message.success("Namespace deleted successfully");
-
-      setNamespaceToDelete(null);
-    } catch {
-      message.error("Failed to delete namespace");
-    } finally {
-      setDeleting(false);
-    }
-  };
 
   return (
     <main className="app-page">
@@ -94,9 +125,7 @@ export default function NamespacesPage() {
       <header className="page-header">
         <div className="page-header-content">
           <p className="page-eyebrow">Cluster</p>
-
           <Title className="page-title">{cluster.name}</Title>
-
           <Paragraph className="page-description">
             Explore and manage the namespaces running inside this cluster.
           </Paragraph>
