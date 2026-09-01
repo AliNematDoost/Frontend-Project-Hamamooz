@@ -45,47 +45,55 @@ export default function ClusterCard({ cluster }) {
   };
 
   return (
-    <Card className="resource-card" hoverable onClick={handleClick}>
-      <Card.Meta
-        avatar={
-          <div className="resource-card-icon">
-            <CloudServerOutlined />
-          </div>
-        }
-        title={cluster.name}
-        description={
-          <>
-            <Text className="resource-address" ellipsis>
-              {cluster.address}
-            </Text>
-
-            <div className="resource-meta">
-              <Tag color="green" className="resource-status">
-                Connected
-              </Tag>
-              <Tag icon={<ApartmentOutlined />} className="resource-status">
-                Kubernetes Cluster
-              </Tag>
+    <>
+      <Card className="resource-card" hoverable onClick={handleClick}>
+        <Card.Meta
+          avatar={
+            <div className="resource-card-icon">
+              <CloudServerOutlined />
             </div>
-
-            <div className="resource-actions">
-              <Text type="secondary" style={{ fontSize: 12 }}>
-                View Namespaces
+          }
+          title={cluster.name}
+          description={
+            <>
+              <Text className="resource-address" ellipsis>
+                {cluster.address}
               </Text>
 
-              <Button
-                type="text"
-                size="small"
-                className="token-button"
-                icon={<KeyOutlined />}
-                onClick={handleTokenClick}
-              >
-                Update Token
-              </Button>
-            </div>
-          </>
-        }
-      />
+              <div className="resource-meta">
+                <Tag color="green" className="resource-status">
+                  Connected
+                </Tag>
+
+                <Tag icon={<ApartmentOutlined />} className="resource-status">
+                  Kubernetes Cluster
+                </Tag>
+              </div>
+
+              <div className="resource-actions">
+                <Text
+                  type="secondary"
+                  style={{
+                    fontSize: 12,
+                  }}
+                >
+                  View Namespaces
+                </Text>
+
+                <Button
+                  type="text"
+                  size="small"
+                  className="token-button"
+                  icon={<KeyOutlined />}
+                  onClick={handleTokenClick}
+                >
+                  Update Token
+                </Button>
+              </div>
+            </>
+          }
+        />
+      </Card>
 
       <ClusterTokenModal
         open={tokenModalOpen}
@@ -93,6 +101,6 @@ export default function ClusterCard({ cluster }) {
         onUpdate={handleUpdateToken}
         onCancel={() => setTokenModalOpen(false)}
       />
-    </Card>
+    </>
   );
 }

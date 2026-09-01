@@ -11,3 +11,10 @@ export function updateClusterToken(clusterId, token) {
     .patch(`/cluster/${clusterId}`, { token })
     .then((res) => res.data);
 }
+
+// POST /api/cluster
+export function createCluster({ name, address, token }) {
+  return apiClient
+    .post("/cluster", { name, address, token })
+    .then((res) => res.data);
+}

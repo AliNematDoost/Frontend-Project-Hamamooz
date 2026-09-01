@@ -19,6 +19,7 @@ export default function ClusterTokenModal({
 
   const handleSubmit = async () => {
     const values = await form.validateFields();
+
     await onUpdate(values);
   };
 
@@ -31,6 +32,14 @@ export default function ClusterTokenModal({
       onOk={handleSubmit}
       onCancel={onCancel}
       destroyOnClose
+      modalRender={(modal) => (
+        <div
+          onClick={(event) => event.stopPropagation()}
+          onMouseDown={(event) => event.stopPropagation()}
+        >
+          {modal}
+        </div>
+      )}
     >
       <Form
         form={form}
@@ -41,9 +50,14 @@ export default function ClusterTokenModal({
         <Form.Item
           name="token"
           label="Service Account Token"
-          rules={[{ required: true, message: "Please enter a token" }]}
+          rules={[
+            {
+              required: true,
+              message: "Please enter a token",
+            },
+          ]}
         >
-          <Input.Password
+          <Input
             placeholder="eyJhbGciOi..."
             autoComplete="new-password"
           />
