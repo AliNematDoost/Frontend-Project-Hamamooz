@@ -7,6 +7,7 @@ import {
   CloudUploadOutlined,
   DeleteOutlined,
   EditOutlined,
+  QuestionCircleOutlined,
   ScheduleOutlined,
 } from "@ant-design/icons";
 
@@ -339,13 +340,29 @@ export default function AppDetailPage() {
             <Descriptions.Item label="Name">{app.name}</Descriptions.Item>
             <Descriptions.Item label="Status">
               <Tag
-                color={app.ready ? "green" : "orange"}
+                color={
+                  app.ready === null
+                    ? "default"
+                    : app.ready
+                      ? "green"
+                      : "orange"
+                }
                 icon={
-                  app.ready ? <CheckCircleOutlined /> : <CloseCircleOutlined />
+                  app.ready === null ? (
+                    <QuestionCircleOutlined />
+                  ) : app.ready ? (
+                    <CheckCircleOutlined />
+                  ) : (
+                    <CloseCircleOutlined />
+                  )
                 }
                 className="resource-status"
               >
-                {app.ready ? "Running" : "Not Ready"}
+                {app.ready === null
+                  ? "Status Unavailable"
+                  : app.ready
+                    ? "Running"
+                    : "Not Ready"}
               </Tag>
             </Descriptions.Item>
             <Descriptions.Item label="Image">{app.image}</Descriptions.Item>
